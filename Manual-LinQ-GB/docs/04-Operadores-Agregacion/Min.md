@@ -1,13 +1,13 @@
-# Average
+# Min
 
 ## 1. Introducción
 
-`Average()` es un operador de agregación de LINQ que permite calcular el promedio aritmético de una secuencia de valores numéricos.
+`Min()` es un operador de agregación de LINQ que permite obtener el valor más pequeño de una secuencia.
 
 Es equivalente a la función SQL:
 
 ```sql
-AVG()
+MIN()
 ```
 
 Pertenece al namespace:
@@ -20,85 +20,65 @@ System.Linq
 
 # 2. Sintaxis
 
-## Promedio directo
+## Valor mínimo de una colección
 
 ```csharp
-Average()
+Min()
 ```
 
-## Promedio mediante selector
+## Valor mínimo mediante selector
 
 ```csharp
-Average(
+Min(
     Func<TSource,TResult> selector
 )
 ```
 
 ---
 
-# 3. Fórmula Matemática
+# 3. ¿Cómo Funciona?
 
-```text
-Promedio = Suma de Valores / Cantidad de Valores
-```
-
-Ejemplo:
-
-```text
-10 + 20 + 30 + 40 = 100
-
-100 / 4 = 25
-```
-
-Resultado:
-
-```text
-25
-```
-
----
-
-# 4. Ejemplo Básico
+Colección:
 
 ```csharp
 List<int> numeros =
 [
+    25,
     10,
-    20,
-    30,
-    40
+    40,
+    5,
+    30
 ];
+```
 
-double promedio =
-    numeros.Average();
+Consulta:
 
-Console.WriteLine(promedio);
+```csharp
+int minimo =
+    numeros.Min();
 ```
 
 Resultado:
 
 ```text
-25
+5
 ```
 
 ---
 
-# 5. Arquitectura Interna
+# 4. Arquitectura Interna
 
 ```text
 Colección
       │
       ▼
- Average()
+    Min()
       │
       ▼
-Calcular Suma
+Comparar Valores
       │
       ▼
-Contar Elementos
-      │
-      ▼
-Dividir
+Encontrar Menor
       │
       ▼
 Resultado
@@ -106,7 +86,33 @@ Resultado
 
 ---
 
-# 6. Average con Objetos
+# 5. Ejemplo Básico
+
+```csharp
+int[] edades =
+{
+    18,
+    25,
+    32,
+    15,
+    40
+};
+
+int edadMinima =
+    edades.Min();
+
+Console.WriteLine(edadMinima);
+```
+
+Resultado:
+
+```text
+15
+```
+
+---
+
+# 6. Min con Objetos
 
 Clase:
 
@@ -121,46 +127,40 @@ public class Producto
 Consulta:
 
 ```csharp
-decimal promedio =
-    productos.Average(
+decimal precioMinimo =
+    productos.Min(
         p => p.Precio
     );
 ```
 
 ---
 
-# 7. Average con Decimales
+# 7. Min con Fechas
 
 ```csharp
-List<decimal> salarios =
-[
-    1200m,
-    1500m,
-    1800m,
-    2000m
-];
-
-decimal promedio =
-    salarios.Average();
+DateTime fechaMasAntigua =
+    ventas.Min(
+        v => v.Fecha
+    );
 ```
 
 Resultado:
 
 ```text
-1625
+Fecha más antigua registrada
 ```
 
 ---
 
-# 8. Average con Where
+# 8. Min con Where
 
 ```csharp
-decimal promedio =
+decimal menorPrecio =
     productos
         .Where(
             p => p.Stock > 0
         )
-        .Average(
+        .Min(
             p => p.Precio
         );
 ```
@@ -172,41 +172,51 @@ decimal promedio =
 Consulta:
 
 ```csharp
-decimal promedio =
-    contexto.Ventas
-        .Average(
-            v => v.Total
+decimal minimo =
+    contexto.Productos
+        .Min(
+            p => p.Precio
         );
 ```
 
 SQL aproximado:
 
 ```sql
-SELECT AVG(Total)
-FROM Ventas;
+SELECT MIN(Precio)
+FROM Productos;
 ```
 
 ---
 
 # 10. Caso Empresarial
 
-Promedio de ventas:
+Precio más bajo:
 
 ```csharp
-decimal promedioVentas =
-    contexto.Ventas
-        .Average(
-            v => v.Total
+decimal precioMinimo =
+    contexto.Productos
+        .Min(
+            p => p.Precio
         );
 ```
 
-Promedio de salarios:
+Salario mínimo:
 
 ```csharp
-decimal promedioSalarios =
+decimal salarioMinimo =
     contexto.Empleados
-        .Average(
+        .Min(
             e => e.Salario
+        );
+```
+
+Venta más pequeña:
+
+```csharp
+decimal ventaMinima =
+    contexto.Ventas
+        .Min(
+            v => v.Total
         );
 ```
 
@@ -214,7 +224,7 @@ decimal promedioSalarios =
 
 # 11. Tipos Compatibles
 
-Average soporta:
+Min puede utilizarse con:
 
 ```csharp
 int
@@ -222,36 +232,38 @@ long
 float
 double
 decimal
+DateTime
+string
 ```
 
 ---
 
-# 12. Diferencia entre Sum y Average
+# 12. Diferencia entre Min y Max
 
-## Sum
+## Min
 
 ```csharp
-numeros.Sum();
+numeros.Min();
 ```
 
 Resultado:
 
 ```text
-100
+5
 ```
 
 ---
 
-## Average
+## Max
 
 ```csharp
-numeros.Average();
+numeros.Max();
 ```
 
 Resultado:
 
 ```text
-25
+40
 ```
 
 ---
@@ -261,23 +273,23 @@ Resultado:
 Si la colección está vacía:
 
 ```csharp
-var promedio =
-    numeros.Average();
+var minimo =
+    numeros.Min();
 ```
 
-Se genera una excepción:
+Se produce:
 
 ```text
 InvalidOperationException
 ```
 
-Por ello suele validarse previamente:
+Por ello suele validarse:
 
 ```csharp
 if(numeros.Any())
 {
-    var promedio =
-        numeros.Average();
+    var minimo =
+        numeros.Min();
 }
 ```
 
@@ -288,34 +300,34 @@ if(numeros.Any())
 - Muy eficiente.
 - Compatible con SQL.
 - Optimizado por LINQ.
-- Ideal para estadísticas y reportes.
+- Ideal para estadísticas.
 
 ---
 
 # 15. Ejemplos Reales
 
-Promedio de calificaciones:
+Edad mínima:
 
 ```csharp
-double promedio =
-    notas.Average();
-```
-
-Promedio de edad:
-
-```csharp
-double promedioEdad =
-    personas.Average(
+int menorEdad =
+    personas.Min(
         p => p.Edad
     );
 ```
 
-Promedio de ventas mensuales:
+Nota más baja:
 
 ```csharp
-decimal promedioMensual =
-    ventas.Average(
-        v => v.Total
+double notaMinima =
+    calificaciones.Min();
+```
+
+Precio más económico:
+
+```csharp
+decimal menorPrecio =
+    productos.Min(
+        p => p.Precio
     );
 ```
 
@@ -323,12 +335,12 @@ decimal promedioMensual =
 
 # 16. Resumen
 
-`Average()` calcula el promedio de una secuencia numérica.
+`Min()` devuelve el valor más pequeño de una secuencia.
 
 Características:
 
-- Equivalente a AVG de SQL.
+- Equivalente a MIN de SQL.
 - Compatible con Entity Framework.
-- Utiliza suma y conteo internamente.
+- Soporta tipos numéricos, fechas y cadenas.
 - Ejecución inmediata.
-- Muy utilizado en análisis estadístico, dashboards y reportes empresariales.
+- Muy utilizado en reportes, análisis y métricas empresariales.
