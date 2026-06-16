@@ -24,7 +24,9 @@ Utiliza un estilo declarativo muy similar al SQL tradicional. Es ideal para cons
 
 Obtener los nombres de estudiantes mayores de 18 años ordenados alfabéticamente
 
-var resultado = from estudiante in listaEstudiantes
-                where estudiante.Edad >= 18
-                orderby estudiante.Nombre
-                select estudiante.Nombre;
+```
+var resultado = listaEstudiantes
+                .Where(e => e.Edad >= 18)
+                .OrderBy(e => e.Nombre)
+                .Select(e => e.Nombre);
+```
